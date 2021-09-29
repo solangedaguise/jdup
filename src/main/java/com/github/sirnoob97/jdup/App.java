@@ -3,7 +3,47 @@
  */
 package com.github.sirnoob97.jdup;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
+import java.awt.*;
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.*;
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 public class App {
+  private static Map<String, List<String>> hashes = new HashMap<>();
+
+  public static void main(String[] args) throws IOException {
+    var path = Path.of(args[0]);
+    if (!Files.isDirectory(path) || !Files.exists(path)) {
+      System.err.println("The path must be an existing direcotry!!");
+      System.exit(1);
+    }
+    Set<Path> files = new HashSet<>();
+    Files.walkFileTree(path, new SimpleFileVisitor<>() {
+      @Override
+      public FileVisitResult visitFile(Path file, BasicFileAttributes attr) throws IOException {
+        if (!Files.isDirectory(file)) files.add(file);
+        return FileVisitResult.CONTINUE;
+      }
+    });
+
+    files.forEach(file -> put(hash(file), file));
+
+    System.out.println("Duplicate files:");
+    hashes.entrySet()
+        .stream()
+        .map(Map.Entry::getValue)
+        .filter(list -> list.size() > 1)
+        .flatMap(List::stream)
+        .forEach(System.out::println);
   }
 
   public static String hash(Path file) {
