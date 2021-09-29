@@ -16,5 +16,17 @@ public class App {
 
     return hash;
   }
+
+  public static void put(String hash, Path file) {
+    if (hashes.containsKey(hash)) {
+      hashes.get(hash).add(file.toString());
+      return;
+    }
+    if (!hashes.containsKey(hash)) {
+      var files = new ArrayList<String>();
+      files.add(file.toString());
+
+      hashes.put(hash, files);
+    }
   }
 }
