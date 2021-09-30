@@ -5,17 +5,10 @@ package com.github.sirnoob97.jdup;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
-import java.awt.*;
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
-import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 public class App {
   private static Map<String, List<String>> hashes = new HashMap<>();
@@ -26,16 +19,14 @@ public class App {
       System.err.println("The path must be an existing direcotry!!");
       System.exit(1);
     }
-    Set<Path> files = new HashSet<>();
-    Files.walkFileTree(path, new SimpleFileVisitor<>() {
-      @Override
-      public FileVisitResult visitFile(Path file, BasicFileAttributes attr) throws IOException {
-        if (!Files.isDirectory(file)) files.add(file);
-        return FileVisitResult.CONTINUE;
-      }
-    });
+    var files = Visitor.visitRootDir(visitor ->
+        visitor.root(path)
+            .files(new HashSet<>())
+            .ignore(Set.of(".git")));
 
-    files.forEach(file -> put(hash(file), file));
+    files.stream()
+//        .peek(System.out::println)
+        .forEach(file -> put(hash(file), file));
 
     System.out.println("Duplicate files:");
     hashes.entrySet()
