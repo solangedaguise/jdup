@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
+import static java.nio.file.FileVisitResult.SKIP_SUBTREE;
 
 public class Visitor {
 
@@ -50,12 +51,11 @@ public class Visitor {
     return new SimpleFileVisitor<>() {
       @Override
       public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-        return !ignore.isEmpty() && ignore.contains(dir.getFileName().toString()) ? FileVisitResult.SKIP_SUBTREE : CONTINUE;
+        return !ignore.isEmpty() && ignore.contains(dir.getFileName().toString()) ? SKIP_SUBTREE : CONTINUE;
       }
 
       @Override
       public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-        if (!Files.isDirectory(file)) files.add(file);
         return CONTINUE;
       }
 
