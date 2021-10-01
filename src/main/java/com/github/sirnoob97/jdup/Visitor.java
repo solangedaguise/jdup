@@ -56,6 +56,7 @@ public class Visitor {
 
       @Override
       public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+        if (!Files.isDirectory(file) && !Files.isSymbolicLink(file)) files.add(file);
         return CONTINUE;
       }
 
