@@ -23,7 +23,13 @@ public class App {
     var files = Visitor.visitRootDir(visitor ->
         visitor.root(path)
             .files(new HashSet<>())
+            .ignore(Set.of(".git", "node_modules", ".settings", ".project")));
 
+    Sha256Table.getDups(files)
+        .entrySet().stream()
+        .filter(entry -> entry.getValue().size() > 1)
+        .filter(entry -> !entry.getKey().equals(EMPTY_FILE_HASH))
+        .peek(entry -> System.out.format("%nFiles that share the hash: %s%n", entry.getKey()))
         .map(Map.Entry::getValue)
         .flatMap(List::stream)
         .forEach(System.out::println);
