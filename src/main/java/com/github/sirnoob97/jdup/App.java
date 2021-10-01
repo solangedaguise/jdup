@@ -3,17 +3,18 @@
  */
 package com.github.sirnoob97.jdup;
 
-import org.apache.commons.codec.digest.DigestUtils;
-
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class App {
-  private static Map<String, List<String>> hashes = new HashMap<>();
 
-  public static void main(String[] args) throws IOException {
+  private static final String EMPTY_FILE_HASH = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
+
+  public static void main(String[] args) {
     var path = Path.of(args[0]);
     if (!Files.isDirectory(path) || !Files.exists(path)) {
       System.err.println("The path must be an existing direcotry!!");
@@ -22,42 +23,15 @@ public class App {
     var files = Visitor.visitRootDir(visitor ->
         visitor.root(path)
             .files(new HashSet<>())
-            .ignore(Set.of(".git")));
+            .ignore(Set.of(".git", "node_modules", ".settings", ".project")));
 
-    files.stream()
-//        .peek(System.out::println)
-        .forEach(file -> put(hash(file), file));
-
-    System.out.println("Duplicate files:");
-    hashes.entrySet()
-        .stream()
+    Sha256Table.getDups(files)
+        .entrySet().stream()
+        .filter(entry -> entry.getValue().size() > 1)
+        .filter(entry -> !entry.getKey().equals(EMPTY_FILE_HASH))
+        .peek(entry -> System.out.format("%nFiles that share the hash: %s%n", entry.getKey()))
         .map(Map.Entry::getValue)
-        .filter(list -> list.size() > 1)
         .flatMap(List::stream)
         .forEach(System.out::println);
-  }
-
-  public static String hash(Path file) {
-    var hash = new String();
-    try (var inputStream = Files.newInputStream(file)) {
-      hash = DigestUtils.sha256Hex(inputStream);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    return hash;
-  }
-
-  public static void put(String hash, Path file) {
-    if (hashes.containsKey(hash)) {
-      hashes.get(hash).add(file.toString());
-      return;
-    }
-    if (!hashes.containsKey(hash)) {
-      var files = new ArrayList<String>();
-      files.add(file.toString());
-
-      hashes.put(hash, files);
-    }
   }
 }
