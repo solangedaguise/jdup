@@ -3,6 +3,8 @@
  */
 package com.github.sirnoob97.jdup;
 
+import picocli.CommandLine;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
@@ -15,9 +17,11 @@ public class App {
   private static final String EMPTY_FILE_HASH = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
 
   public static void main(String[] args) {
-    var path = Path.of(args[0]);
+    JDupOption options = new JDupOption();
+    new CommandLine(options).parseArgs(args);
+    var path = Path.of(options.path != null ? options.path : System.getProperty("user.dir"));
     if (!Files.isDirectory(path) || !Files.exists(path)) {
-      System.err.println("The path must be an existing direcotry!!");
+      System.err.println("The path must be an existing directory!!");
       System.exit(1);
     }
     var files = Visitor.visitRootDir(visitor ->
