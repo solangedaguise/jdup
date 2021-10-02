@@ -11,17 +11,11 @@ class JDupOptionTest {
     private JDupOption options = new JDupOption();
 
     @Test
-    void pathOptionShort() {
-        parseOptions(options, "-p", "/path/to/dir");
+    void pathParameter() {
+        var currDir = System.getProperty("user.dir");
+        parseOptions(options, currDir);
 
-        assertEquals(options.path, "/path/to/dir");
-    }
-
-    @Test
-    void pathOptionLong() {
-        parseOptions(options, "--path", "/path/to/dir");
-
-        assertEquals(options.path, "/path/to/dir");
+        assertEquals(options.path.toString(), currDir);
     }
 
     @Test
