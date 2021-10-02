@@ -15,8 +15,14 @@ import java.util.function.Predicate;
 public class App {
 
   public static void main(String[] args) {
-    JDupOption options = new JDupOption();
-    new CommandLine(options).parseArgs(args);
+    var options = new JDupOption();
+    var cli = new CommandLine(options).parseArgs(args);
+
+    if (cli.isUsageHelpRequested()) {
+      CommandLine.usage(options, System.out);
+      System.exit(0);
+    }
+
     var path = options.getPath();
 
     if (!Files.isDirectory(path) || !Files.exists(path)) {
