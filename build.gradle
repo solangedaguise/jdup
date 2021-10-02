@@ -21,7 +21,7 @@ dependencies {
     implementation group: 'info.picocli', name: 'picocli', version: '4.6.1'
 
     // Use JUnit Jupiter for testing.
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
 }
 
 application {
