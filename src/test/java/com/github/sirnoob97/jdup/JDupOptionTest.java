@@ -1,5 +1,6 @@
 package com.github.sirnoob97.jdup;
 
+import com.github.sirnoob97.jdup.cli.JDupOption;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
