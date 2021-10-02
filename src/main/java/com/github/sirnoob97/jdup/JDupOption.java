@@ -1,8 +1,13 @@
 package com.github.sirnoob97.jdup;
 
-import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Parameters;
 
+import java.nio.file.Path;
+
+@Command
 public class JDupOption {
-    @CommandLine.Option(names = {"-p", "--path"}, description = "Path to check for duplicates, default is current directory")
-    String path;
+
+    @Parameters(defaultValue = "${user.dir}", description = "Path to check for duplicates, default: ${DEFAULT_VALUE}.")
+    Path path;
 }
