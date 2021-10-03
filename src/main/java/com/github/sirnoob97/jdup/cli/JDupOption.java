@@ -40,17 +40,12 @@ import java.util.function.Predicate;
   private boolean emptyFiles;
 
   @Option(names = { "-h", "--help" }, usageHelp = true, description = "display this help message")
-  boolean usageHelpRequested;
+  private boolean usageHelpRequested;
 
-  public Path getPath() {
-    return path;
-  }
-
-  public Set<String> getIgnore() {
-    return ignore;
-  }
-
-  public Predicate<Map.Entry<String, List<String>>> getEmptyFilesPredicate() {
+  private Predicate<Map.Entry<String, List<String>>> getEmptyFilesPredicate() {
     return emptyFiles ? allowEmptyFiles : denyEmptyFiles;
+  }
+
+
   }
 }
