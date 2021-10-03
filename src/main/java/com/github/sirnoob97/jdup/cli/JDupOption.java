@@ -18,14 +18,15 @@ import java.util.function.Predicate;
     optionListHeading = "%nOptions%n%n",
     descriptionHeading = "%nDescription:%n%n",
     description = "Find duplicate files based on SHA256 hash, file name is ignored.",
+    sortOptions = false,
     abbreviateSynopsis = true)
-public class JDupOption {
 
   private static final String EMPTY_FILE_HASH = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
   private static final Predicate<Map.Entry<String, List<String>>> allowEmptyFiles = entry -> entry.getKey().equals(EMPTY_FILE_HASH);
   private static final Predicate<Map.Entry<String, List<String>>> denyEmptyFiles = entry -> !entry.getKey().equals(EMPTY_FILE_HASH);
 
-  @Parameters(defaultValue = "${user.dir}", description = "Path to check for duplicates, default: ${DEFAULT_VALUE}.")
+  @Parameters(defaultValue = "${user.dir}",
+      description = "Path to check for duplicates, default: ${DEFAULT_VALUE}.")
   private Path path;
 
   @Option(names = { "-i", "--ignore" },
