@@ -3,45 +3,32 @@
  */
 package com.github.sirnoob97.jdup;
 
+import com.github.sirnoob97.jdup.cli.InvalidInputHandler;
 import com.github.sirnoob97.jdup.cli.JDupOption;
 import picocli.CommandLine;
-
-import java.nio.file.Files;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Predicate;
+import picocli.CommandLine.Help.Ansi.Style;
+import picocli.CommandLine.Help.ColorScheme;
 
 public class App {
 
   public static void main(String[] args) {
     var options = new JDupOption();
-    var cli = new CommandLine(options).parseArgs(args);
-
-    if (cli.isUsageHelpRequested()) {
-      CommandLine.usage(options, System.out);
-      System.exit(0);
-    }
-
-    var path = options.getPath();
-
-    if (!Files.isDirectory(path) || !Files.exists(path)) {
-      System.err.println("The path must be an existing directory!!");
-      System.exit(1);
-    }
-    var files = Visitor.visitRootDir(visitor ->
-        visitor.root(path)
-            .files(new HashSet<>())
-            .ignore(options.getIgnore()));
-
-    Sha256Table.getDups(files)
-        .entrySet().stream()
-        .filter(entry -> entry.getValue().size() > 1)
-        .filter(options.getEmptyFilesPredicate())
-        .peek(entry -> System.out.format("%nFiles that share the hash: %s%n", entry.getKey()))
-        .map(Map.Entry::getValue)
-        .flatMap(List::stream)
-        .forEach(System.out::println);
+    System.setProperty("picocli.ansi", "true");
+    var code = new CommandLine(options)
+        .setColorScheme(createColorScheme())
+        .setParameterExceptionHandler(new InvalidInputHandler())
+        .execute(args);
+    System.exit(code);
   }
 
+  private static ColorScheme createColorScheme() {
+    return new ColorScheme.Builder()
+        .commands(Style.bold, Style.underline)
+        .options(Style.fg_green)
+        .parameters(Style.fg_yellow)
+        .optionParams(Style.italic)
+        .errors(Style.bold, Style.fg_red)
+        .stackTraces(Style.italic, Style.fg_red)
+        .build();
+  }
 }
