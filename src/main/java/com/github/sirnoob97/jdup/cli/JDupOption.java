@@ -49,6 +49,22 @@ public class JDupOption implements Callable<Integer> {
   @Option(names = { "-h", "--help" }, usageHelp = true, description = "display this help message")
   private boolean usageHelpRequested;
 
+  public Path getPath() {
+    return path;
+  }
+
+  public Set<String> getIgnore() {
+    return ignore;
+  }
+
+  public boolean isEmptyFiles() {
+    return emptyFiles;
+  }
+
+  public boolean isUsageHelpRequested() {
+    return usageHelpRequested;
+  }
+
   private Predicate<Map.Entry<String, List<String>>> getEmptyFilesPredicate() {
     return emptyFiles ? allowEmptyFiles : denyEmptyFiles;
   }
