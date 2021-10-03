@@ -23,7 +23,7 @@ public class InvalidInputHandler implements IParameterExceptionHandler {
       err.println(cmd.getColorScheme().stackTraceText(ex));
     }
 
-    err.format("%s%n%n", cmd.getColorScheme().errorText(ex.getMessage())); // bold red
+    err.format("%s%n%n", cmd.getColorScheme().errorText(ex.getMessage()));
     UnmatchedArgumentException.printSuggestions(ex, err);
     err.format("Usage:%n%s%n", cmd.getHelp().fullSynopsis());
 
