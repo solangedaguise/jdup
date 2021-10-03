@@ -6,15 +6,29 @@ package com.github.sirnoob97.jdup;
 import com.github.sirnoob97.jdup.cli.InvalidInputHandler;
 import com.github.sirnoob97.jdup.cli.JDupOption;
 import picocli.CommandLine;
+import picocli.CommandLine.Help.Ansi.Style;
+import picocli.CommandLine.Help.ColorScheme;
 
 public class App {
 
   public static void main(String[] args) {
     var options = new JDupOption();
+    System.setProperty("picocli.ansi", "true");
     var code = new CommandLine(options)
+        .setColorScheme(createColorScheme())
         .setParameterExceptionHandler(new InvalidInputHandler())
         .execute(args);
-
     System.exit(code);
+  }
+
+  private static ColorScheme createColorScheme() {
+    return new ColorScheme.Builder()
+        .commands(Style.bold, Style.underline)
+        .options(Style.fg_green)
+        .parameters(Style.fg_yellow)
+        .optionParams(Style.italic)
+        .errors(Style.bold, Style.fg_red)
+        .stackTraces(Style.italic, Style.fg_red)
+        .build();
   }
 }
