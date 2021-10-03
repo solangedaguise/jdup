@@ -1,32 +1,43 @@
 package com.github.sirnoob97.jdup;
 
 import com.github.sirnoob97.jdup.cli.JDupOption;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
+import picocli.CommandLine.ParameterException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static picocli.CommandLine.MissingParameterException;
 
 class JDupOptionTest {
 
-    private JDupOption options = new JDupOption();
+  private static JDupOption options;
 
-    @Test
-    void pathParameter() {
-        var currDir = System.getProperty("user.dir");
-        parseOptions(options, currDir);
+  @BeforeEach
+  void init() {
+    options = new JDupOption();
+  }
 
-        assertEquals(options.path.toString(), currDir);
-    }
+  @Test
+  void pathParameter() {
+    var dir = System.getenv("HOME");
+    parseOptions(dir);
 
-    @Test
-    void invalidOption() {
-        Assertions.assertThrows(CommandLine.UnmatchedArgumentException.class, () -> {
-            parseOptions(options, "-x");
-        });
-    }
+    assertEquals(options.getPath().toString(), dir);
+  }
 
-    private void parseOptions(JDupOption options, String ... commandLineOptions) {
-        new CommandLine(options).parseArgs(commandLineOptions);
-    }
+  @Test
+  void noParameter() {
+    assertThrows(ParameterException.class, () -> parseOptions(""));
+  }
+
+  @Test
+  void invalidOption() {
+    assertThrows(MissingParameterException.class, () -> parseOptions("-x"));
+  }
+
+  private void parseOptions(String... commandLineOptions) {
+    new CommandLine(options).parseArgs(commandLineOptions);
+  }
 }
