@@ -10,8 +10,9 @@ import java.io.PrintWriter;
 
 public class InvalidInputHandler implements IParameterExceptionHandler {
 
-  public InvalidInputHandler(){}
-  
+  public InvalidInputHandler() {
+  }
+
   @Override
   public int handleParseException(ParameterException ex, String[] args) throws Exception {
     CommandLine cmd = ex.getCommandLine();
@@ -22,12 +23,12 @@ public class InvalidInputHandler implements IParameterExceptionHandler {
       err.println(cmd.getColorScheme().stackTraceText(ex));
     }
 
-    err.println(cmd.getColorScheme().errorText(ex.getMessage())); // bold red
+    err.format("%s%n%n", cmd.getColorScheme().errorText(ex.getMessage())); // bold red
     UnmatchedArgumentException.printSuggestions(ex, err);
-    err.print(cmd.getHelp().fullSynopsis());
+    err.format("Usage:%n%s%n", cmd.getHelp().fullSynopsis());
 
     CommandSpec spec = cmd.getCommandSpec();
-    err.printf("Try '%s --help' for more information.%n", spec.qualifiedName());
+    err.format("Try '%s --help' for more information.%n", spec.qualifiedName());
 
     return cmd.getExitCodeExceptionMapper() != null
         ? cmd.getExitCodeExceptionMapper().getExitCode(ex)
