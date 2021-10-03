@@ -30,9 +30,11 @@ public class JDupOption implements Callable<Integer> {
   private static final Predicate<Map.Entry<String, List<String>>> allowEmptyFiles = entry -> entry.getKey().equals(EMPTY_FILE_HASH);
   private static final Predicate<Map.Entry<String, List<String>>> denyEmptyFiles = entry -> !entry.getKey().equals(EMPTY_FILE_HASH);
 
-  @Parameters(defaultValue = "${user.dir}",
-      description = "Path to check for duplicates, default: ${DEFAULT_VALUE}.")
+  @Parameters(arity = "1",
+      converter = PathConverter.class,
+      description = "Path to check for duplicates.")
   private Path path;
+
 
   @Option(names = { "-i", "--ignore" },
       arity = "0..1",
