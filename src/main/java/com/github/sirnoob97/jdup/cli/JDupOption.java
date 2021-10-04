@@ -15,7 +15,8 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.function.Predicate;
 
-@Command(headerHeading = "Usage:%n%n",
+@Command(name = "jdup",
+    headerHeading = "Usage:%n%n",
     header = "Duplicate files finder.",
     synopsisHeading = "%n",
     parameterListHeading = "%nParameters:%n%n",
