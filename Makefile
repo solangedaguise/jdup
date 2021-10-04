@@ -1,10 +1,15 @@
-.PHONY: clean test package build install
+INSTALL_PREFIX=$$HOME/.local/bin
+JAR=./build/libs/jdup.jar
+NATIVE_IMAGE=./bin/jdup
+VERSION=$(shell git describe --tags --abbrev=0)
 
-test: clean
-	@gradle test
+.PHONY: clean test package build install
 
 clean:
 	@gradle clean compileJava
+
+test: clean
+	@gradle test
 
 package: clean
 	@gradle compileJava shadowJar
