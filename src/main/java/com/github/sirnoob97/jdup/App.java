@@ -32,6 +32,8 @@ public class App {
         .peek(entry -> System.out.format("%nFiles that share the hash: %s%n", entry.getKey()))
         .map(Map.Entry::getValue)
         .flatMap(List::stream)
-        .forEach(System.out::println);
+        .forEach(elem -> {
+        	System.out.println(elem);
+        });
   }
 }
